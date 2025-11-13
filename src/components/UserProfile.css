@@ -150,6 +150,20 @@
   padding: 24px 20px !important;
   background: white;
   border-bottom: 2px solid #e2e8f0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* When expanded (My Travels tab), badges take half width */
+.user-profile.expanded .badges-section {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Show the right column only in expanded mode */
+.user-profile.expanded .badges-right-column {
+  display: flex;
 }
 
 .section-header {
@@ -157,6 +171,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  grid-column: 1 / -1;
+  width: 100%;
 }
 
 .section-header h4 {
@@ -177,10 +193,30 @@
   border-radius: 12px;
 }
 
+/* Only change badge-count in expanded mode - align to left */
+.user-profile.expanded .badge-count {
+  margin-right: auto;
+  margin-left: 22rem;
+  padding: 6px 12px;
+}
+
+.badges-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.badges-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  /* Right column reserved for future content */
+}
+
 .badges-grid {
   display: grid;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .badge-card {

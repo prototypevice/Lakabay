@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import './UserProfile.css';
 
-const UserProfile = ({ profile, onToggleAI }) => {
+const UserProfile = ({ profile, onToggleAI, expanded = false }) => {
   // Calculate gamification stats
   const stats = useMemo(() => {
     const visitedCount = profile.beenThere.length;
@@ -84,7 +84,7 @@ const UserProfile = ({ profile, onToggleAI }) => {
   const nextBadge = badges.find(b => !b.unlocked);
 
   return (
-    <div className="user-profile">
+    <div className={`user-profile ${expanded ? 'expanded' : ''}`}>
       <div className="profile-header">
         <div className="avatar">👤</div>
         <div className="profile-info">
@@ -125,41 +125,48 @@ const UserProfile = ({ profile, onToggleAI }) => {
           <span className="badge-count">{unlockedBadges.length}/{badges.length}</span>
         </div>
         
-        <div className="badges-grid">
-          {badges.map(badge => (
-            <div 
-              key={badge.id} 
-              className={`badge-card ${badge.unlocked ? 'unlocked' : 'locked'}`}
-              title={badge.description}
-            >
-              <div className="badge-icon">{badge.icon}</div>
-              <div className="badge-info">
-                <span className="badge-name">{badge.name}</span>
-                {!badge.unlocked && (
-                  <div className="badge-progress">
-                    <div className="progress-bar">
-                      <div 
-                        className="progress-fill"
-                        style={{ width: `${(badge.current / badge.requirement) * 100}%` }}
-                      />
+        <div className="badges-column">
+          <div className="badges-grid">
+            {badges.map(badge => (
+              <div 
+                key={badge.id} 
+                className={`badge-card ${badge.unlocked ? 'unlocked' : 'locked'}`}
+                title={badge.description}
+              >
+                <div className="badge-icon">{badge.icon}</div>
+                <div className="badge-info">
+                  <span className="badge-name">{badge.name}</span>
+                  {!badge.unlocked && (
+                    <div className="badge-progress">
+                      <div className="progress-bar">
+                        <div 
+                          className="progress-fill"
+                          style={{ width: `${(badge.current / badge.requirement) * 100}%` }}
+                        />
+                      </div>
+                      <span className="progress-text">{badge.current}/{badge.requirement}</span>
                     </div>
-                    <span className="progress-text">{badge.current}/{badge.requirement}</span>
-                  </div>
-                )}
+                  )}
+                </div>
+                {badge.unlocked && <div className="badge-checkmark">✓</div>}
               </div>
-              {badge.unlocked && <div className="badge-checkmark">✓</div>}
+            ))}
+          </div>
+
+          {nextBadge && (
+            <div className="next-badge-hint">
+              <span className="hint-icon">🎯</span>
+              <span className="hint-text">
+                Next: {nextBadge.name} - {nextBadge.description}
+              </span>
             </div>
-          ))}
+          )}
         </div>
 
-        {nextBadge && (
-          <div className="next-badge-hint">
-            <span className="hint-icon">🎯</span>
-            <span className="hint-text">
-              Next: {nextBadge.name} - {nextBadge.description}
-            </span>
-          </div>
-        )}
+        {/* Right side placeholder for future content */}
+        <div className="badges-right-column">
+          {/* Add your content here */}
+        </div>
       </div>
 
       {/* AI Assistant Button */}
