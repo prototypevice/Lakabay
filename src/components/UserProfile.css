@@ -27,6 +27,221 @@
   background: #94a3b8;
 }
 
+/* Compact Mode for Sidebar */
+.user-profile.compact {
+  border-right: none;
+}
+
+.user-profile.compact .profile-header {
+  padding: 12px 14px;
+  gap: 10px;
+}
+
+.user-profile.compact .avatar {
+  width: 40px;
+  height: 40px;
+  font-size: 1.3rem;
+}
+
+.user-profile.compact .profile-info h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.user-profile.compact .profile-subtitle {
+  font-size: 0.75rem;
+}
+
+.user-profile.compact .stats-grid {
+  display: none;
+}
+
+.user-profile.compact .badges-section {
+  padding: 12px 12px !important;
+}
+
+.user-profile.compact .section-header {
+  margin-bottom: 10px;
+}
+
+.user-profile.compact .section-header h4 {
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.user-profile.compact .badges-grid {
+  max-width: 100%;
+  gap: 8px;
+}
+
+.user-profile.compact .badge-card {
+  padding: 8px;
+  gap: 8px;
+}
+
+.user-profile.compact .badge-icon {
+  width: 28px;
+  height: 28px;
+  font-size: 1.2rem;
+}
+
+.user-profile.compact .badge-name {
+  font-size: 0.75rem;
+}
+
+.user-profile.compact .badge-progress {
+  gap: 2px;
+}
+
+.user-profile.compact .progress-text {
+  font-size: 0.65rem;
+}
+
+.user-profile.compact .checklist-title {
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  margin-top: 12px;
+}
+
+.user-profile.compact .add-checklist-btn {
+  padding: 8px 10px;
+  font-size: 0.8rem;
+  width: calc(100% - 16px);
+  margin: 0 8px;
+}
+
+.user-profile.compact .checklist-items {
+  max-width: calc(100% - 16px);
+  margin-left: 8px;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.user-profile.compact .checklist-item {
+  width: auto;
+}
+
+.user-profile.compact .checklist-item-header {
+  padding: 8px 10px;
+  gap: 8px;
+}
+
+.user-profile.compact .checklist-checkbox {
+  width: 16px;
+  height: 16px;
+}
+
+.user-profile.compact .checklist-icon {
+  width: 28px;
+  height: 28px;
+  font-size: 1.1rem;
+}
+
+.user-profile.compact .checklist-text {
+  font-size: 0.8rem;
+}
+
+.user-profile.compact .checklist-expand-btn,
+.user-profile.compact .checklist-delete-btn {
+  padding: 2px 4px;
+  font-size: 0.9rem;
+}
+
+.user-profile.compact .checklist-notes-input {
+  font-size: 0.8rem;
+  padding: 8px;
+  min-height: 60px;
+}
+
+.user-profile.compact .templates-section {
+  width: calc(100% - 16px);
+  margin: 10px 8px;
+  padding: 10px;
+}
+
+.user-profile.compact .templates-header-title {
+  font-size: 0.8rem;
+}
+
+.user-profile.compact .template-item {
+  padding: 8px;
+  gap: 6px;
+}
+
+.user-profile.compact .template-name {
+  font-size: 0.8rem;
+}
+
+.user-profile.compact .template-meta {
+  font-size: 0.75rem;
+}
+
+.user-profile.compact .templates-action-btn {
+  padding: 5px 8px;
+  font-size: 0.7rem;
+}
+
+.user-profile.compact .preloaded-templates {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.user-profile.compact .preloaded-title {
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+}
+
+.user-profile.compact .preloaded-grid {
+  gap: 6px;
+}
+
+.user-profile.compact .preloaded-template-btn {
+  padding: 10px 8px;
+  gap: 4px;
+}
+
+.user-profile.compact .preloaded-icon {
+  font-size: 1.4rem;
+}
+
+.user-profile.compact .preloaded-name {
+  font-size: 0.7rem;
+}
+
+.user-profile.compact .next-badge-hint {
+  display: none;
+}
+
+.user-profile.compact .ai-toggle-btn {
+  margin: 10px 8px;
+  padding: 8px 10px;
+  font-size: 0.8rem;
+}
+
+.user-profile.compact .profile-section {
+  padding: 10px 8px !important;
+  margin: 10px 0;
+}
+
+.user-profile.compact .profile-section h4 {
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.user-profile.compact .location-list {
+  gap: 6px;
+}
+
+.user-profile.compact .location-item {
+  padding: 6px 8px;
+  font-size: 0.8rem;
+}
+
+.user-profile.compact .empty-state {
+  font-size: 0.75rem;
+  padding: 8px;
+}
+
 /* Profile Header */
 .profile-header {
   display: flex;

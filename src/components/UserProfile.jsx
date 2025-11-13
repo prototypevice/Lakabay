@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import './UserProfile.css';
 
-const UserProfile = ({ profile, onToggleAI, expanded = false }) => {
+const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = false }) => {
   const [showAddChecklistModal, setShowAddChecklistModal] = useState(false);
   const [checklistForm, setChecklistForm] = useState({ name: '', icon: '✓' });
   const [expandedChecklistId, setExpandedChecklistId] = useState(null);
@@ -373,7 +373,7 @@ const UserProfile = ({ profile, onToggleAI, expanded = false }) => {
   };
 
   return (
-    <div className={`user-profile ${expanded ? 'expanded' : ''}`}>
+    <div className={`user-profile ${expanded ? 'expanded' : ''} ${compactMode ? 'compact' : ''}`}>
       <div className="profile-header">
         <div className="avatar">👤</div>
         <div className="profile-info">

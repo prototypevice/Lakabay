@@ -82,6 +82,7 @@ function App() {
                 <UserProfile 
                   profile={userProfile}
                   onToggleAI={() => setShowAIChat(!showAIChat)}
+                  compactMode={true}
                 />
               </div>
 
