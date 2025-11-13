@@ -13,7 +13,7 @@ const Navbar = ({ currentPage, onNavigate }) => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <h1>🇵🇭 Travel Philippines AI</h1>
+          <h1>🇵🇭 Landscapes</h1>
           <p className="navbar-tagline">Discover the Beauty of the Philippines</p>
         </div>
         

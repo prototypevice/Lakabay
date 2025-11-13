@@ -92,7 +92,7 @@ const PhilippinesMap = ({ onLocationClick, userProfile }) => {
         );
         const data = await response.json();
         
-        console.log('Full Nominatim data:', data);
+        console.log('Full Notanim data:', data);
         
         const address = data.address || {};
         
