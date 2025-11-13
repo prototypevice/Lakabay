@@ -7,6 +7,8 @@ const LocationModal = ({ location, onClose, onMarkBeen, onMarkWant, onAskAI }) =
   const [communityMessages, setCommunityMessages] = useState([]);
   const [messageLikes, setMessageLikes] = useState({});
   const [activeCategory, setActiveCategory] = useState('activities'); // activities, places, food
+  const [showReviewsModal, setShowReviewsModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   if (!location) return null;
 
@@ -216,6 +218,78 @@ const LocationModal = ({ location, onClose, onMarkBeen, onMarkWant, onAskAI }) =
 
   const currentMarketplace = locationMarketplace[location.id] || { activities: [], places: [], food: [] };
 
+  // Reviews data for featured items
+  const itemReviews = {
+    'Intramuros Walking Tour': [
+      { id: 1, user: 'Maria Santos', rating: 5, date: '2 days ago', comment: 'Amazing historical tour! Our guide was very knowledgeable about Philippine history. The walls and old churches are breathtaking. Highly recommend!', helpful: 24 },
+      { id: 2, user: 'John Smith', rating: 5, date: '1 week ago', comment: 'Best way to experience Manila\'s colonial past. The Spanish architecture is stunning. Don\'t forget to bring comfortable shoes!', helpful: 18 },
+      { id: 3, user: 'Ana Cruz', rating: 4, date: '2 weeks ago', comment: 'Great tour but can be very hot during midday. Go early morning or late afternoon. The Fort Santiago is a must-see!', helpful: 15 },
+      { id: 4, user: 'David Lee', rating: 5, date: '3 weeks ago', comment: 'Absolutely loved the kalesa ride! Felt like going back in time. The guide shared fascinating stories about each landmark.', helpful: 12 }
+    ],
+    'Zubuchon': [
+      { id: 1, user: 'Carlos Reyes', rating: 5, date: '1 day ago', comment: 'THE BEST LECHON IN THE PHILIPPINES! Crispy skin, juicy meat, perfect seasoning. Anthony Bourdain was right - this is the best pig ever!', helpful: 45 },
+      { id: 2, user: 'Michelle Tan', rating: 5, date: '3 days ago', comment: 'Waited 30 minutes but totally worth it! The lechon is incredibly flavorful. Order the whole belly - you won\'t regret it!', helpful: 32 },
+      { id: 3, user: 'James Wilson', rating: 5, date: '1 week ago', comment: 'First time trying Cebu lechon and I\'m blown away! The spices and herbs make it so aromatic. Best paired with their liver sauce!', helpful: 28 },
+      { id: 4, user: 'Lisa Garcia', rating: 4, date: '2 weeks ago', comment: 'Very good lechon but a bit pricey. The quality justifies the price though. Service was fast and staff were friendly.', helpful: 19 }
+    ],
+    'White Beach Station 1': [
+      { id: 1, user: 'Sarah Johnson', rating: 5, date: '2 days ago', comment: 'Paradise on earth! The sand is like powder and the water is crystal clear. Perfect for relaxing and swimming. Best beach I\'ve ever been to!', helpful: 56 },
+      { id: 2, user: 'Mike Torres', rating: 5, date: '5 days ago', comment: 'Station 1 is definitely the finest part of White Beach. Less crowded, cleaner, and the sand is unbelievable. Worth the extra walk!', helpful: 41 },
+      { id: 3, user: 'Emma Brown', rating: 4, date: '1 week ago', comment: 'Beautiful beach but very touristy. Go early morning for the best experience. Sunset here is magical!', helpful: 33 },
+      { id: 4, user: 'Rico Santos', rating: 5, date: '2 weeks ago', comment: 'Clean and well-maintained. The water is so clear you can see the bottom. Perfect for families with kids.', helpful: 27 }
+    ],
+    'El Nido Island Hopping Tour A': [
+      { id: 1, user: 'Alex Turner', rating: 5, date: '1 day ago', comment: 'Absolutely stunning! Big Lagoon and Small Lagoon are breathtaking. The limestone cliffs are spectacular. Book this tour first!', helpful: 38 },
+      { id: 2, user: 'Sophie Martinez', rating: 5, date: '4 days ago', comment: 'Best tour in El Nido! Secret Lagoon was my favorite - swimming inside the rocks is surreal. Great food included too!', helpful: 34 },
+      { id: 3, user: 'Jake Anderson', rating: 5, date: '1 week ago', comment: 'Tour A is a must-do! The water is so clear and blue. Our guide was excellent and took amazing photos for us. Bring waterproof bag!', helpful: 29 },
+      { id: 4, user: 'Nina Lopez', rating: 4, date: '2 weeks ago', comment: 'Amazing sights but can be crowded. Try to book for weekdays. Still worth every peso!', helpful: 22 }
+    ],
+    'Good Shepherd Convent': [
+      { id: 1, user: 'Grace Lee', rating: 5, date: '3 days ago', comment: 'Their ube jam is legendary! Been buying here for 20 years. Also try the strawberry jam and peanut brittle. Perfect pasalubong!', helpful: 67 },
+      { id: 2, user: 'Robert Chen', rating: 5, date: '1 week ago', comment: 'Best food souvenir from Baguio! The ube jam tastes homemade and natural. Not too sweet. Stock up!', helpful: 52 },
+      { id: 3, user: 'Anna Reyes', rating: 5, date: '2 weeks ago', comment: 'A Baguio institution! Great quality, reasonable prices. Their cashew brittle is also excellent. Get there early to avoid crowds.', helpful: 43 },
+      { id: 4, user: 'Mark Davis', rating: 5, date: '3 weeks ago', comment: 'Everyone visiting Baguio should stop here. The products are authentic and delicious. Supporting a good cause too!', helpful: 38 }
+    ],
+    'Vigan Empanada Plaza': [
+      { id: 1, user: 'Elena Cruz', rating: 5, date: '1 day ago', comment: 'THE ORIGINAL VIGAN EMPANADA! Crispy orange shell, perfect filling with egg, longganisa, and vegetables. Get it fresh and hot!', helpful: 48 },
+      { id: 2, user: 'Jose Ramos', rating: 5, date: '4 days ago', comment: 'Best empanada in the Philippines! The sukang Iloko (vinegar) dip makes it perfect. Try different vendors to compare!', helpful: 41 },
+      { id: 3, user: 'Carla Santos', rating: 5, date: '1 week ago', comment: 'Street food at its finest! Watch them cook it fresh. The combination of flavors is amazing. Only ₱35 per piece!', helpful: 36 },
+      { id: 4, user: 'Tom Wilson', rating: 5, date: '2 weeks ago', comment: 'Must-try when in Vigan! Unique and delicious. The egg inside is perfectly runny. Bring cash!', helpful: 29 }
+    ],
+    'Cloud 9 Boardwalk': [
+      { id: 1, user: 'Ryan Cooper', rating: 5, date: '2 days ago', comment: 'Iconic surf spot! Even if you don\'t surf, watching the pros is amazing. The boardwalk extends over the reef - great for photos!', helpful: 44 },
+      { id: 2, user: 'Kelly White', rating: 5, date: '5 days ago', comment: 'Must-visit in Siargao! The waves are legendary. Sunrise and sunset here are spectacular. Free to visit!', helpful: 37 },
+      { id: 3, user: 'Brad Mitchell', rating: 5, date: '1 week ago', comment: 'The heart of Siargao! Great vibe, lots of surfers, beautiful views. The rock formations are impressive too.', helpful: 31 },
+      { id: 4, user: 'Amy Chen', rating: 4, date: '2 weeks ago', comment: 'Very cool spot but can get very crowded. Go early morning for best experience. The barrel waves are insane!', helpful: 26 }
+    ],
+    'Chocolate Hills Viewpoint': [
+      { id: 1, user: 'Daniel Kim', rating: 5, date: '1 day ago', comment: 'Geological wonder! Over 1,200 hills as far as the eye can see. Climb to the top for panoramic views. Absolutely stunning!', helpful: 51 },
+      { id: 2, user: 'Rachel Green', rating: 5, date: '3 days ago', comment: 'One of the most unique landscapes I\'ve seen! Visit during dry season when they turn brown. Worth the trip to Bohol!', helpful: 42 },
+      { id: 3, user: 'Chris Lee', rating: 5, date: '1 week ago', comment: 'Breathtaking! The formation is unlike anywhere else in the world. Great photo opportunities. Don\'t miss this!', helpful: 38 },
+      { id: 4, user: 'Maria Santos', rating: 4, date: '2 weeks ago', comment: 'Beautiful but very hot! Bring water and hat. The climb has many steps. The view from top is worth it though!', helpful: 30 }
+    ],
+    'Cagsawa Ruins Park': [
+      { id: 1, user: 'Paul Martinez', rating: 5, date: '2 days ago', comment: 'Iconic view of Mayon Volcano! The ruins tell a powerful story of the 1814 eruption. Perfect backdrop for photos. History and nature combined!', helpful: 46 },
+      { id: 2, user: 'Julia Santos', rating: 5, date: '5 days ago', comment: 'Must-visit when in Albay! The bell tower remnant is hauntingly beautiful. Mayon\'s perfect cone in the background is spectacular!', helpful: 39 },
+      { id: 3, user: 'Eric Tan', rating: 4, date: '1 week ago', comment: 'Great historical site. Best time for photos is early morning with clear skies. Small entrance fee. Worth it!', helpful: 32 },
+      { id: 4, user: 'Linda Chen', rating: 5, date: '2 weeks ago', comment: 'Peaceful and beautiful. Learn about the tragic history while enjoying stunning views. The museum nearby is informative.', helpful: 27 }
+    ]
+  };
+
+  // Function to get reviews for an item
+  const getItemReviews = (itemName) => {
+    return itemReviews[itemName] || [
+      { id: 1, user: 'Patricia Wong', rating: 5, date: '1 week ago', comment: 'Great experience! Would definitely recommend to anyone visiting the area.', helpful: 10 },
+      { id: 2, user: 'Marcus Rodriguez', rating: 4, date: '2 weeks ago', comment: 'Really enjoyed this! Good value for money and friendly staff.', helpful: 8 },
+      { id: 3, user: 'Samantha Chen', rating: 5, date: '3 weeks ago', comment: 'One of the highlights of my trip! Don\'t miss this place.', helpful: 12 }
+    ];
+  };
+
+  const handleShowReviews = (item) => {
+    setSelectedItem(item);
+    setShowReviewsModal(true);
+  };
+
   // Community insights data for each location
   const communityInsights = {
     manila: [
@@ -398,9 +472,14 @@ const LocationModal = ({ location, onClose, onMarkBeen, onMarkWant, onAskAI }) =
                         </div>
                         <p className="card-business">🏢 {item.business}</p>
                       </div>
-                      <button className="card-action">
-                        <span>📱</span>
-                      </button>
+                      <div className="card-actions">
+                        <button className="btn-reviews" onClick={() => handleShowReviews(item)}>
+                          💬 Reviews
+                        </button>
+                        <button className="card-action">
+                          <span>📱</span>
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -495,8 +574,57 @@ const LocationModal = ({ location, onClose, onMarkBeen, onMarkWant, onAskAI }) =
           </button>
         </div>
       </div>
+
+      {/* Reviews Modal */}
+      {showReviewsModal && selectedItem && (
+        <div className="reviews-modal-overlay" onClick={() => setShowReviewsModal(false)}>
+          <div className="reviews-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="reviews-modal-header">
+              <div className="reviews-header-info">
+                <span className="reviews-item-emoji">{selectedItem.image}</span>
+                <div>
+                  <h3 className="reviews-item-name">{selectedItem.name}</h3>
+                  <div className="reviews-item-rating">
+                    <span className="rating-stars">⭐ {selectedItem.rating}</span>
+                    <span className="rating-count">({selectedItem.reviews} reviews)</span>
+                  </div>
+                </div>
+              </div>
+              <button className="reviews-close-btn" onClick={() => setShowReviewsModal(false)}>✕</button>
+            </div>
+
+            <div className="reviews-list">
+              {getItemReviews(selectedItem.name).map((review) => (
+                <div key={review.id} className="review-card">
+                  <div className="review-header">
+                    <div className="review-user">
+                      <div className="review-user-info">
+                        <span className="review-username">{review.user}</span>
+                        <span className="review-date">{review.date}</span>
+                      </div>
+                    </div>
+                    <div className="review-rating">
+                      {'⭐'.repeat(review.rating)}
+                    </div>
+                  </div>
+                  <p className="review-comment">{review.comment}</p>
+                  <div className="review-footer">
+                    <button className="review-helpful">
+                      👍 Helpful ({review.helpful})
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="reviews-modal-footer">
+              <button className="btn-write-review">✍️ Write a Review</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default LocationModal;
