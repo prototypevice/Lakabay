@@ -19,8 +19,12 @@ function App() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [userProfile, setUserProfile] = useState({
+    // Ito yung array kung saan natin ise-save yung data ng users, like been there and want to go
     beenThere: [],
-    wantToGo: []
+    wantToGo: [],
+    checklists: [], 
+    savedTemplates: [],
+    lastPreloadedTemplateId: null
   });
   const [showAIChat, setShowAIChat] = useState(false);
   const [focusLocation, setFocusLocation] = useState(null);
@@ -51,6 +55,9 @@ function App() {
             const newProfile = {
               beenThere: [],
               wantToGo: [],
+              checklists: [],
+              savedTemplates: [],
+              lastPreloadedTemplateId: null,
               email: user.email,
               displayName: user.displayName || 'Traveler',
               photoURL: user.photoURL || '',
@@ -68,7 +75,10 @@ function App() {
         // If user is logged out, reset natin to guest profile
         setUserProfile({
           beenThere: [],
-          wantToGo: []
+          wantToGo: [],
+          checklists: [],
+          savedTemplates: [],
+          lastPreloadedTemplateId: null
         });
       }
 

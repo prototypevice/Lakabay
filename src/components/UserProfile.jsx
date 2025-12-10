@@ -1,43 +1,26 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import './UserProfile.css';
+import { db } from '../firebase'; 
+import { doc, updateDoc } from 'firebase/firestore';
 
-const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = false }) => {
+const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = false, currentUser }) => { //NEW: Added currentUser prop
   const [showAddChecklistModal, setShowAddChecklistModal] = useState(false);
   const [checklistForm, setChecklistForm] = useState({ name: '', icon: '✓' });
   const [expandedChecklistId, setExpandedChecklistId] = useState(null);
-  const [userChecklists, setUserChecklists] = useState(() => {
-    // Initialize state from localStorage immediately
-    try {
-      const saved = localStorage.getItem('userChecklists');
-      return saved ? JSON.parse(saved) : [];
-    } catch (error) {
-      console.error('Error loading checklists:', error);
-      return [];
-    }
-  });
+  
+  //MODIFIED: Initialize from profile prop instead of localStorage
+  const [userChecklists, setUserChecklists] = useState(profile.checklists || []);
   
   // State for save/load checklist templates
   const [showSaveChecklistModal, setShowSaveChecklistModal] = useState(false);
   const [saveChecklistName, setSaveChecklistName] = useState('');
-  const [savedChecklistTemplates, setSavedChecklistTemplates] = useState(() => {
-    try {
-      const saved = localStorage.getItem('savedChecklistTemplates');
-      return saved ? JSON.parse(saved) : [];
-    } catch (error) {
-      console.error('Error loading saved templates:', error);
-      return [];
-    }
-  });
+  
+  //MODIFIED: Initialize from profile prop instead of localStorage
+  const [savedChecklistTemplates, setSavedChecklistTemplates] = useState(profile.savedTemplates || []);
   
   // Track the last loaded preloaded template ID (for replacing logic)
-  const [lastPreloadedTemplateId, setLastPreloadedTemplateId] = useState(() => {
-    try {
-      const saved = localStorage.getItem('lastPreloadedTemplateId');
-      return saved ? saved : null;
-    } catch (error) {
-      return null;
-    }
-  });
+  // MODIFIED: Initialize from profile prop instead of localStorage
+  const [lastPreloadedTemplateId, setLastPreloadedTemplateId] = useState(profile.lastPreloadedTemplateId || null);
 
   // Preloaded templates for different occasions
   const preloadedTemplates = [
@@ -127,25 +110,79 @@ const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = fals
     }
   ];
 
-  // Save checklists to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('userChecklists', JSON.stringify(userChecklists));
-    console.log('Checklists saved:', userChecklists);
-    console.log('LocalStorage content:', localStorage.getItem('userChecklists'));
-  }, [userChecklists]);
+  // NEW FUNCTION: Save checklists to Firebase
+  const saveChecklistsToFirebase = async (checklists) => {
+    if (currentUser) {
+      try {
+        const userDocRef = doc(db, 'users', currentUser.uid);
+        await updateDoc(userDocRef, {
+          checklists: checklists,
+          updatedAt: new Date().toISOString()
+        });
+        console.log('✅ Checklists saved to Firebase');
+      } catch (error) {
+        console.error('❌ Error saving checklists:', error);
+      }
+    } else {
+      console.log('⚠️ No user logged in, checklists not saved');
+    }
+  };
 
-  // Save templates to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('savedChecklistTemplates', JSON.stringify(savedChecklistTemplates));
-    console.log('Templates saved:', savedChecklistTemplates);
-  }, [savedChecklistTemplates]);
+  // NEW FUNCTION: Save templates to Firebase
+  const saveTemplatesToFirebase = async (templates) => {
+    if (currentUser) {
+      try {
+        const userDocRef = doc(db, 'users', currentUser.uid);
+        await updateDoc(userDocRef, {
+          savedTemplates: templates,
+          updatedAt: new Date().toISOString()
+        });
+        console.log('✅ Templates saved to Firebase');
+      } catch (error) {
+        console.error('❌ Error saving templates:', error);
+      }
+    }
+  };
 
-  // Save last preloaded template ID to localStorage
+  // NEW FUNCTION: Save last preloaded template ID to Firebase
+  const saveLastPreloadedIdToFirebase = async (templateId) => {
+    if (currentUser) {
+      try {
+        const userDocRef = doc(db, 'users', currentUser.uid);
+        await updateDoc(userDocRef, {
+          lastPreloadedTemplateId: templateId,
+          updatedAt: new Date().toISOString()
+        });
+        console.log('✅ Last preloaded template ID saved');
+      } catch (error) {
+        console.error('❌ Error saving last preloaded ID:', error);
+      }
+    }
+  };
+
+  // MODIFIED: Save to Firebase when checklists change (removed localStorage)
+  useEffect(() => {
+    saveChecklistsToFirebase(userChecklists);
+  }, [userChecklists, currentUser]); //ADDED: currentUser dependency
+
+  // MODIFIED: Save to Firebase when templates change (removed localStorage)
+  useEffect(() => {
+    saveTemplatesToFirebase(savedChecklistTemplates);
+  }, [savedChecklistTemplates, currentUser]); //ADDED: currentUser dependency
+
+  // MODIFIED: Save to Firebase when last preloaded ID changes (removed localStorage)
   useEffect(() => {
     if (lastPreloadedTemplateId) {
-      localStorage.setItem('lastPreloadedTemplateId', lastPreloadedTemplateId);
+      saveLastPreloadedIdToFirebase(lastPreloadedTemplateId);
     }
-  }, [lastPreloadedTemplateId]);
+  }, [lastPreloadedTemplateId, currentUser]); //ADDED: currentUser dependency
+
+  //NEW: Sync state when profile prop changes (user logs in/out or data updates)
+  useEffect(() => {
+    setUserChecklists(profile.checklists || []);
+    setSavedChecklistTemplates(profile.savedTemplates || []);
+    setLastPreloadedTemplateId(profile.lastPreloadedTemplateId || null);
+  }, [profile]); //NEW: This entire useEffect is new
 
   // Calculate gamification stats
   const stats = useMemo(() => {
@@ -269,7 +306,7 @@ const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = fals
       });
       // Clear preloaded template tracking so next template appends instead
       setLastPreloadedTemplateId(null);
-      localStorage.removeItem('lastPreloadedTemplateId');
+      // ⭐ REMOVED: localStorage.removeItem('lastPreloadedTemplateId'); (Firebase handles this now)
       handleCloseModal();
     }
   };
