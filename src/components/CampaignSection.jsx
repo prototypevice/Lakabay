@@ -14,6 +14,12 @@ const CreateCampaignIcon = () => (
   </svg>
 );
 
+const RocketIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+    <path fill="#667eea" d="M19.557 3.1H20.9v1.343a7 7 0 0 1-2.05 4.95l-7.557 7.556l-4.243-4.243l7.557-7.556a7 7 0 0 1 4.95-2.05Zm-1.554 9.968l2.26-2.261A9 9 0 0 0 22.9 4.443V1.1h-3.343a9 9 0 0 0-6.364 2.636l-2.261 2.26l-5.657-.707L1.04 9.524L14.475 22.96l4.235-4.235l-.707-5.656Zm-1.792 1.791l.393 3.143l-2.129 2.129l-1.768-1.768l3.504-3.504Zm-7.07-7.071l-3.505 3.504l-1.768-1.768l2.13-2.129l3.142.393Zm-3.505 9.16l-3.535 3.536L.687 19.07l3.535-3.535l1.414 1.414Zm2.829 2.83l-3.536 3.535l-1.414-1.414l3.535-3.536l1.415 1.414Z"></path>
+  </svg>
+);
+
 const BrowseCampaignsIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
@@ -21,20 +27,9 @@ const BrowseCampaignsIcon = () => (
   </svg>
 );
 
-const BusinessOwnerIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-    <polyline points="13 2 13 9 20 9"></polyline>
-    <path d="M9 15h2"></path>
-    <path d="M13 15h2"></path>
-    <path d="M9 19h2"></path>
-    <path d="M13 19h2"></path>
-  </svg>
-);
-
 const CreatorIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"></path>
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+    <path fill="#667eea" d="M9.993 10.573a4.5 4.5 0 1 0 0-9a4.5 4.5 0 0 0 0 9ZM10 0a6 6 0 0 1 3.04 11.174c3.688 1.11 6.458 4.218 6.955 8.078c.047.367-.226.7-.61.745c-.383.045-.733-.215-.78-.582c-.54-4.19-4.169-7.345-8.57-7.345c-4.425 0-8.101 3.161-8.64 7.345c-.047.367-.397.627-.78.582c-.384-.045-.657-.378-.61-.745c.496-3.844 3.281-6.948 6.975-8.068A6 6 0 0 1 10 0Z"></path>
   </svg>
 );
 
@@ -46,28 +41,15 @@ const VideoIcon = () => (
 );
 
 const AnalyticsIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"></polyline>
-    <polyline points="12 12.5 20 7.5"></polyline>
-    <polyline points="12 21 12 12.5"></polyline>
-    <polyline points="4 7.5 12 12.5"></polyline>
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16">
+    <path fill="#667eea" d="M1 15V0H0v16h16v-1H1z"></path>
+    <path fill="#667eea" d="M9 8L6 5L2 9v2l4-4l3 3l7-7V1z"></path>
   </svg>
 );
 
 const EarningsIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="1"></circle>
-    <path d="M12 1v6m0 6v6"></path>
-    <path d="M4.22 4.22l4.24 4.24m2.12 2.12l4.24 4.24"></path>
-    <path d="M1 12h6m6 0h6"></path>
-    <path d="M4.22 19.78l4.24-4.24m2.12-2.12l4.24-4.24"></path>
-  </svg>
-);
-
-const ArrowIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="5 12 19 12"></polyline>
-    <polyline points="12 5 19 12 12 19"></polyline>
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
+    <path fill="#667eea" d="M0 4c0-1.1.9-2 2-2h15a1 1 0 0 1 1 1v1H2v1h17a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm16.5 9a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3z"></path>
   </svg>
 );
 
@@ -78,12 +60,12 @@ const ViewTrackingIcon = () => (
   </svg>
 );
 
-const PayoutIcon = () => (
-  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="2" x2="12" y2="22"></line>
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-    <path d="M6 21l3-3"></path>
-    <path d="M18 3l3 3"></path>
+const CoinStackIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
+    <path fill="#667eea" d="M12 10c3.976 0 8-1.374 8-4s-4.024-4-8-4s-8 1.374-8 4s4.024 4 8 4z"></path>
+    <path fill="#667eea" d="M4 10c0 2.626 4.024 4 8 4s8-1.374 8-4V8c0 2.626-4.024 4-8 4s-8-1.374-8-4v2z"></path>
+    <path fill="#667eea" d="M4 14c0 2.626 4.024 4 8 4s8-1.374 8-4v-2c0 2.626-4.024 4-8 4s-8-1.374-8-4v2z"></path>
+    <path fill="#667eea" d="M4 18c0 2.626 4.024 4 8 4s8-1.374 8-4v-2c0 2.626-4.024 4-8 4s-8-1.374-8-4v2z"></path>
   </svg>
 );
 
@@ -95,11 +77,8 @@ const PlatformIcon = () => (
 );
 
 const OnboardingIcon = () => (
-  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3"></polyline>
-    <polyline points="12 12.5 20 7.5"></polyline>
-    <polyline points="12 21 12 12.5"></polyline>
-    <polyline points="4 7.5 12 12.5"></polyline>
+  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 376 384">
+    <path fill="#667eea" d="M119 282L346 55l29 30l-256 256L0 222l30-30z"></path>
   </svg>
 );
 
@@ -224,6 +203,7 @@ const CampaignLandingPage = ({ onCreateCampaign = () => {}, onBrowseCampaigns = 
       {/* Hero Section - Dual Sided Portal */}
       <section className="campaign-hero">
         <div className="campaign-hero-left">
+          <span className="role-label">FOR BUSINESSES</span>
           <h2>Run High-Performance Video Campaigns</h2>
           <p>Connect with talented creators and showcase your brand to thousands of viewers. Manage everything in one place.</p>
           <button onClick={handleCreateCampaign} className="campaign-hero-btn campaign-hero-btn-left">
@@ -232,6 +212,7 @@ const CampaignLandingPage = ({ onCreateCampaign = () => {}, onBrowseCampaigns = 
         </div>
         <div className="campaign-hero-divider"></div>
         <div className="campaign-hero-right">
+          <span className="role-label">FOR CREATORS</span>
           <h2>Earn Money by Posting Videos</h2>
           <p>Join campaigns that match your style and audience. Get paid for every 1000 views and grow your income stream.</p>
           <button onClick={handleBrowseCampaigns} className="campaign-hero-btn campaign-hero-btn-right">
@@ -259,7 +240,7 @@ const CampaignLandingPage = ({ onCreateCampaign = () => {}, onBrowseCampaigns = 
           <ul className="flow-steps-scroll">
             <li className="flow-step-card">
               <article>
-                <div className="step-icon"><BusinessOwnerIcon /></div>
+                <div className="step-icon"><RocketIcon /></div>
                 <a href="#"><span className="step-number">01</span> Create Campaign</a>
                 <p>Business owners set budget, target audience, and video requirements</p>
               </article>
@@ -296,6 +277,9 @@ const CampaignLandingPage = ({ onCreateCampaign = () => {}, onBrowseCampaigns = 
         </div>
       </section>
 
+      {/* Section Divider */}
+      <div className="section-divider"></div>
+
       {/* Campaign Highlights Section */}
       <section className="campaign-highlights">
         <h2>Campaign Highlights</h2>
@@ -306,7 +290,7 @@ const CampaignLandingPage = ({ onCreateCampaign = () => {}, onBrowseCampaigns = 
             <p>Monitor your video performance with live analytics. Track views, engagement, and ROI in real time.</p>
           </div>
           <div className="highlight-card">
-            <div className="highlight-icon"><PayoutIcon /></div>
+            <div className="highlight-icon"><CoinStackIcon /></div>
             <h3>Automatic Payout Progress</h3>
             <p>See your earnings grow as views accumulate. Progress bars show exactly when you'll reach payment thresholds.</p>
           </div>
