@@ -8,7 +8,7 @@ import LocationModal from './components/LocationModal';
 import ExploreSection from './components/ExploreSection';
 import FloatingAIButton from './components/FloatingAIButton';
 import CommunityFeed from './components/CommunityFeed';
-import CampaignSection from './components/CampaignSection';
+import CampaignSection, { CampaignLandingPage } from './components/CampaignSection';
 import CampaignList from './components/CampaignList';
 
 // --> Firebase Imports <-- //
@@ -486,20 +486,11 @@ function App() {
               />
             )}
             
-            {/* Show CampaignSection header if no campaigns, otherwise show CampaignList */}
+            {/* Show CampaignLandingPage if no campaigns, otherwise show CampaignList */}
             {campaigns.length === 0 ? (
-              <CampaignSection 
-                onCreate={async (formData) => {
-                  try {
-                    // Save campaign to localStorage
-                    await saveCampaignToStorage(formData);
-                    console.log('Campaign created:', formData);
-                    // Refresh campaigns list after creation
-                    fetchCampaigns();
-                  } catch (error) {
-                    console.error('Error creating campaign:', error);
-                  }
-                }}
+              <CampaignLandingPage 
+                onCreateCampaign={() => setShowCampaignModal(true)}
+                onBrowseCampaigns={() => setShowCampaignModal(true)}
               />
             ) : (
               <CampaignList 
