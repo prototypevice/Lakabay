@@ -6,6 +6,7 @@ const Navbar = ({ currentPage, onNavigate, currentUser }) => { // Added currentU
   const menuItems = [
     { id: 'map', label: ' Interactive Map', icon: '🗺️' },
     { id: 'explore', label: ' Explore', icon: '🌴' },
+    { id: 'itinerary', label: ' Make Itinerary', icon: '✈️' },
     { id: 'community', label: ' Community', icon: '🌏' },
     { id: 'profile', label: ' My Travels', icon: '👤' },
     { id: 'campaigns', label: ' Campaigns ', icon: '💼'}
