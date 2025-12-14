@@ -254,17 +254,15 @@ function App() {
       try {
         const savedCampaigns = localStorage.getItem('campaigns');
         let campaigns = savedCampaigns ? JSON.parse(savedCampaigns) : [];
-        
+
         // Find the campaign to update
-        const campaignIndex = campaigns.findIndex(campaign => campaign.id === campaignId);
+        const campaignIndex = campaigns.findIndex(c => c.id === campaignId);
         if (campaignIndex === -1) {
           reject(new Error('Campaign not found'));
           return;
         }
 
-        const currentCampaign = campaigns[campaignIndex];
-
-        // If there's a new image file, convert it to base64
+        // If image file exists, convert to base64
         if (updatedData.imageFile) {
           const reader = new FileReader();
           reader.onload = (e) => {
@@ -273,20 +271,19 @@ function App() {
               
               // Update campaign with new data
               campaigns[campaignIndex] = {
-                ...currentCampaign,
+                ...campaigns[campaignIndex],
                 name: updatedData.name,
                 description: updatedData.description,
-                imageUrl: imageBase64,
                 platform: updatedData.platform,
                 total_payout: updatedData.budget,
                 rpm: updatedData.rpm,
+                imageUrl: imageBase64,
                 updatedAt: new Date().toISOString()
               };
 
-              // Save to localStorage
               localStorage.setItem('campaigns', JSON.stringify(campaigns));
               setCampaigns(campaigns);
-              console.log('Campaign updated in localStorage:', campaignId);
+              console.log('Campaign updated in localStorage with new image:', campaignId);
               resolve(campaigns[campaignIndex]);
             } catch (error) {
               console.error('Error processing image:', error);
@@ -299,22 +296,21 @@ function App() {
           };
           reader.readAsDataURL(updatedData.imageFile);
         } else {
-          // No new image file, keep existing image or use provided imageUrl
+          // No new image, update other fields
           campaigns[campaignIndex] = {
-            ...currentCampaign,
+            ...campaigns[campaignIndex],
             name: updatedData.name,
             description: updatedData.description,
-            imageUrl: updatedData.imageUrl !== undefined ? updatedData.imageUrl : currentCampaign.imageUrl,
             platform: updatedData.platform,
             total_payout: updatedData.budget,
             rpm: updatedData.rpm,
+            imageUrl: updatedData.imageUrl || campaigns[campaignIndex].imageUrl, // Keep old image if no new image
             updatedAt: new Date().toISOString()
           };
 
-          // Save to localStorage
           localStorage.setItem('campaigns', JSON.stringify(campaigns));
           setCampaigns(campaigns);
-          console.log('Campaign updated in localStorage:', campaignId);
+          console.log('Campaign updated in localStorage without image change:', campaignId);
           resolve(campaigns[campaignIndex]);
         }
       } catch (error) {
@@ -497,9 +493,8 @@ function App() {
                 onBack={() => {
                   setShowBusinessDashboard(false);
                 }}
-                onEdit={(campaignId) => {
-                  // Handle edit - you can implement this later
-                  console.log('Edit campaign:', campaignId);
+                onEdit={(campaignId, updatedData) => {
+                  return updateCampaignInStorage(campaignId, updatedData);
                 }}
                 onDelete={(campaignId) => {
                   deleteCampaignFromStorage(campaignId);

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './BusinessDashboard.css';
+import EditCampaignModal from './modals/EditCampaignModal';
 
 /**
  * BusinessDashboard Component
@@ -54,6 +55,8 @@ const Target = (props) => (
 );
 
 const BusinessDashboard = ({ campaigns = [], onCreateAnother, onBack, onEdit, onDelete }) => {
+  const [editingCampaign, setEditingCampaign] = useState(null);
+
   if (!campaigns || campaigns.length === 0) {
     return (
       <div className="business-dashboard">
@@ -152,7 +155,7 @@ const BusinessDashboard = ({ campaigns = [], onCreateAnother, onBack, onEdit, on
               {/* Action Buttons */}
               <div className="campaign-actions">
                 {onEdit && (
-                  <button className="btn-action btn-edit" onClick={() => onEdit(campaign.id)}>
+                  <button className="btn-action btn-edit" onClick={() => setEditingCampaign(campaign)}>
                     <EditIcon />
                     <span>Edit Campaign</span>
                   </button>
@@ -195,6 +198,14 @@ const BusinessDashboard = ({ campaigns = [], onCreateAnother, onBack, onEdit, on
           <li>Provide clear guidelines for content creators</li>
         </ul>
       </div>
+
+      {/* Edit Campaign Modal */}
+      <EditCampaignModal
+        campaign={editingCampaign}
+        isOpen={!!editingCampaign}
+        onClose={() => setEditingCampaign(null)}
+        onUpdate={onEdit}
+      />
     </div>
   );
 };
