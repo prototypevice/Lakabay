@@ -70,6 +70,14 @@ const DeleteIcon = () => (
   </svg>
 );
 
+// Target Icon
+const Target = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+    <path fill="#000000" d="M12 4.75a7.25 7.25 0 0 0-6.724 9.969a.75.75 0 1 1-1.39.562a8.75 8.75 0 1 1 4.832 4.832a.75.75 0 0 1 .563-1.39A7.25 7.25 0 1 0 12 4.75"></path>
+    <path fill="#000000" d="M6.25 12c0 1.317.443 2.531 1.188 3.501l-.469.469l-.029.03H5.77a1.5 1.5 0 0 0-1.06.44l-1.637 1.637a.75.75 0 0 0 .53 1.28h1.04v1.04a.75.75 0 0 0 1.28.53l1.637-1.638A1.5 1.5 0 0 0 8 18.23v-1.17l.03-.029l.469-.468A5.75 5.75 0 1 0 6.25 12M12 7.75a4.25 4.25 0 1 1-2.428 7.739l1.646-1.647a2 2 0 1 0-1.06-1.06L8.51 14.427A4.25 4.25 0 0 1 12 7.75M6.94 17l.06.059v1.17a.5.5 0 0 1-.147.353l-1.21 1.21v-.935a.5.5 0 0 0-.5-.5h-.936l1.21-1.21A.5.5 0 0 1 5.771 17z"></path>
+  </svg>
+);
+
 const CampaignList = ({ campaigns, onCreate, onDelete, onUpdate, onBackToLanding, onLearnMore }) => {
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
@@ -397,9 +405,25 @@ const CampaignList = ({ campaigns, onCreate, onDelete, onUpdate, onBackToLanding
       {campaigns.length === 0 && (
         <div className="campaigns-empty-state">
           <div className="empty-state-content">
-            <div className="empty-state-icon">📋</div>
-            <h3>No campaigns yet</h3>
-            <p>Create your first campaign to get started!</p>
+            <div className="empty-state-icon" style={{ fontSize: '3.5rem' }}>
+              <Target />
+            </div>
+            <h3>No campaigns available right now</h3>
+            <p>New campaigns from businesses will appear here.</p>
+            {onLearnMore && (
+              <button 
+                className="empty-state-learn-btn"
+                onClick={onLearnMore}
+                aria-label="Learn how campaigns work"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 16v-4"></path>
+                  <path d="M12 8h.01"></path>
+                </svg>
+                <span>Learn How Campaigns Work</span>
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -423,9 +447,9 @@ const CampaignList = ({ campaigns, onCreate, onDelete, onUpdate, onBackToLanding
       onClose={() => setEditingCampaign(null)}
       onUpdate={onUpdate}
     />
-    
-    {/* How Campaigns Work Floating Button */}
-    {onLearnMore && (
+
+    {/* How Campaigns Work Floating Button - Only when campaigns are available */}
+    {campaigns.length > 0 && onLearnMore && (
       <button 
         className="how-campaigns-work-btn"
         onClick={onLearnMore}

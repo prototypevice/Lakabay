@@ -19,7 +19,10 @@
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 28px;
   animation: fadeIn 0.4s ease-out;
-  min-height: 300px;
+}
+
+.campaigns-grid:has(.campaigns-empty-state) {
+  min-height: calc(100vh - 200px);
 }
 
 @keyframes fadeIn {
@@ -42,7 +45,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
+  min-height: 400px;
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(164, 85, 247, 0.03) 100%);
   border-radius: 12px;
   border: 1px dashed #e2e8f0;
@@ -68,7 +71,46 @@
 .empty-state-content p {
   font-size: 14px;
   color: #64748b;
-  margin: 0;
+  margin: 0 0 24px;
+}
+
+.empty-state-learn-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  outline: none;
+  white-space: nowrap;
+}
+
+.empty-state-learn-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+  background: linear-gradient(135deg, #5568d3 0%, #4556c2 100%);
+}
+
+.empty-state-learn-btn:active {
+  transform: translateY(0);
+}
+
+.empty-state-learn-btn:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: 2px;
+}
+
+.empty-state-learn-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 /* ========================================
