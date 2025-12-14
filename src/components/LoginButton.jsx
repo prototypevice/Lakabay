@@ -11,6 +11,10 @@ function LoginButton({ currentUser, onNavigate }) {
         try {
             const result = await signInWithPopup(auth, provider); // ⭐ FIXED: capital W
             console.log("User logged in:", result.user);
+            // Force reload after login to ensure all user data is shown
+            setTimeout(() => {
+                window.location.reload();
+            }, 200);
         } catch (error) {
             console.error("Error during login:", error);
             alert("Login failed: " + error.message);

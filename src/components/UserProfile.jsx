@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import './UserProfile.css';
 import { db } from '../firebase'; 
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = false, currentUser }) => { //NEW: Added currentUser prop
   const [showAddChecklistModal, setShowAddChecklistModal] = useState(false);
@@ -110,6 +110,42 @@ const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = fals
     }
   ];
 
+  // Quests and vouchers
+  const initialQuests = [
+    { id: 'q_visit_3', title: 'Discoverer', description: 'Visit 3 places to earn a voucher', type: 'visited', requirement: 3, reward: { type: 'voucher', amount: '5% off', vendor: 'Seaside Tours' } },
+    { id: 'q_wishlist_5', title: 'Dream Planner', description: 'Add 5 places to your wishlist', type: 'wishlist', requirement: 5, reward: { type: 'voucher', amount: '5% off', vendor: 'Bayfront Restaurant' } },
+    { id: 'q_checklist_3', title: 'Well Prepared', description: 'Complete 3 checklist items', type: 'checklistsCompleted', requirement: 3, reward: { type: 'voucher', amount: 'Free drink', vendor: 'Beachside Cafe' } }
+  ];
+
+  const [quests, setQuests] = useState(() => {
+    const saved = profile.quests || [];
+    return initialQuests.map(def => ({ ...def, completed: !!saved.find(s => s.id === def.id && s.completed) }));
+  });
+
+  const [vouchers, setVouchers] = useState(profile.vouchers || []);
+  // Keep a ref of previous quests to detect newly completed quests
+  const prevQuestsRef = useRef(quests);
+  // Track awarded quest ids to avoid in-flight duplicate issuance
+  const awardedQuestIdsRef = useRef(new Set());
+
+  // Helper: dedupe vouchers by questId, keeping the latest by issuedAt (or last in array)
+  // (Kept for initial voucher state, but not used repeatedly)
+  const dedupeVouchers = (vs = []) => {
+    const map = new Map();
+    vs.forEach(v => {
+      const key = v.questId || v.id || JSON.stringify(v);
+      const existing = map.get(key);
+      if (!existing) {
+        map.set(key, v);
+      } else {
+        const a = existing.issuedAt ? new Date(existing.issuedAt).getTime() : 0;
+        const b = v.issuedAt ? new Date(v.issuedAt).getTime() : 0;
+        if (b >= a) map.set(key, v);
+      }
+    });
+    return Array.from(map.values());
+  };
+
   // Save checklists to Firebase
   const saveChecklistsToFirebase = useCallback(async (checklists) => {
     if (!currentUser) {
@@ -164,6 +200,36 @@ const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = fals
     }
   }, [currentUser]);
 
+  // Save quests to Firebase
+  const saveQuestsToFirebase = useCallback(async (questsToSave) => {
+    if (!currentUser) return;
+    try {
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      await setDoc(userDocRef, {
+        quests: questsToSave,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+      console.log('✅ Quests saved to Firebase');
+    } catch (error) {
+      console.error('❌ Error saving quests:', error);
+    }
+  }, [currentUser]);
+
+  // Save vouchers to Firebase
+  const saveVouchersToFirebase = useCallback(async (vouchersToSave) => {
+    if (!currentUser) return;
+    try {
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      await setDoc(userDocRef, {
+        vouchers: vouchersToSave,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+      console.log('✅ Vouchers saved to Firebase');
+    } catch (error) {
+      console.error('❌ Error saving vouchers:', error);
+    }
+  }, [currentUser]);
+
 
 
   // Save to Firebase when checklists change
@@ -187,12 +253,37 @@ const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = fals
     }
   }, [lastPreloadedTemplateId, currentUser, saveLastPreloadedIdToFirebase]);
 
-  //NEW: Sync state when profile prop changes (user logs in/out or data updates)
+  // Save quests and vouchers when they change
   useEffect(() => {
+    if (currentUser) {
+      saveQuestsToFirebase(quests);
+    }
+  }, [quests, currentUser, saveQuestsToFirebase]);
+
+  useEffect(() => {
+    if (currentUser) {
+      saveVouchersToFirebase(vouchers);
+    }
+  }, [vouchers, currentUser, saveVouchersToFirebase]);
+
+  // Always show profile prop data instantly for all UI (badges, map, etc.)
+  useEffect(() => {
+    // Only update if changed
     setUserChecklists(profile.checklists || []);
     setSavedChecklistTemplates(profile.savedTemplates || []);
     setLastPreloadedTemplateId(profile.lastPreloadedTemplateId || null);
-  }, [profile]); //NEW: This entire useEffect is new
+    const savedQuests = profile.quests || [];
+    const syncedQuests = initialQuests.map(def => ({
+      ...def,
+      completed: !!savedQuests.find(s => s.id === def.id && s.completed)
+    }));
+    setQuests(syncedQuests);
+    setVouchers(dedupeVouchers(profile.vouchers || []));
+    prevQuestsRef.current = syncedQuests;
+    awardedQuestIdsRef.current = new Set((profile.vouchers || []).map(v => v.questId));
+  }, [profile, currentUser]);
+
+  // Remove duplicate/legacy Firestore fetch effect (now handled by reload on login)
 
   // Calculate gamification stats
   const stats = useMemo(() => {
@@ -422,6 +513,66 @@ const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = fals
     setLastPreloadedTemplateId(template.id);
   };
 
+  // Utility: generate simple voucher code
+  const generateVoucherCode = (prefix = 'V') => {
+    return prefix + Math.random().toString(36).slice(2, 8).toUpperCase();
+  };
+
+  // Award voucher for a completed quest (idempotent by questId)
+  const awardVoucherForQuest = (quest) => {
+    // Guard: don't issue if already awarded or in-flight
+    if (awardedQuestIdsRef.current.has(quest.id)) return;
+    // don't issue duplicate vouchers for same quest
+    const alreadyLocal = vouchers.find(v => v.questId === quest.id);
+    const alreadyInProfile = (profile.vouchers || []).find(v => v.questId === quest.id);
+    if (alreadyLocal || alreadyInProfile) {
+      awardedQuestIdsRef.current.add(quest.id);
+      return;
+    }
+
+    const newVoucher = {
+      id: Date.now() + Math.random(),
+      questId: quest.id,
+      vendor: quest.reward.vendor,
+      amount: quest.reward.amount,
+      code: generateVoucherCode('V'),
+      claimed: false,
+      issuedAt: new Date().toISOString()
+    };
+    setVouchers(prev => [newVoucher, ...prev]);
+    // mark as awarded immediately to prevent concurrent awards
+    awardedQuestIdsRef.current.add(quest.id);
+  };
+
+  // Watch for quest completion conditions (stats, wishlist, checklist completions)
+  useEffect(() => {
+    const checklistCompletedCount = userChecklists.filter(i => i.completed).length;
+
+    const updated = quests.map(q => {
+      const wasCompleted = prevQuestsRef.current?.find(x => x.id === q.id)?.completed;
+      let met = q.completed;
+      if (!q.completed) {
+        if (q.type === 'visited' && stats.visited >= q.requirement) met = true;
+        if (q.type === 'wishlist' && stats.wishlist >= q.requirement) met = true;
+        if (q.type === 'checklistsCompleted' && checklistCompletedCount >= q.requirement) met = true;
+      }
+      // If newly met (was not completed before, now met), award voucher
+      if (!wasCompleted && met) {
+        awardVoucherForQuest(q);
+      }
+      return { ...q, completed: met };
+    });
+
+    // Only update state if something changed
+    const changed = updated.some((u, i) => u.completed !== quests[i].completed);
+    if (changed) {
+      setQuests(updated);
+    }
+
+    // store for next comparison
+    prevQuestsRef.current = updated;
+  }, [stats, userChecklists, quests]);
+
   return (
     <div className={`user-profile ${expanded ? 'expanded' : ''} ${compactMode ? 'compact' : ''}`}>
       <div className="profile-header">
@@ -610,8 +761,57 @@ const UserProfile = ({ profile, onToggleAI, expanded = false, compactMode = fals
               </div>
             </div>
           </div>
-        </div>
-      </div>
+
+            {/* Quests & Vouchers Section */}
+            <div className="quests-section">
+                <h5 className="templates-header-title">🎯 Quests</h5>
+                <div className="quests-list">
+                  {quests.map(q => (
+                    <div key={q.id} className={`quest-card ${q.completed ? 'completed' : ''}`} title={q.description}>
+                      <div className="quest-info">
+                        <div className="quest-title">{q.title}</div>
+                        <div className="quest-desc">{q.description}</div>
+                      </div>
+                      <div className="quest-meta">
+                        {!q.completed ? (
+                          <div className="quest-progress">{q.requirement} {q.type === 'visited' ? 'visits' : q.type === 'wishlist' ? 'wishlist' : 'items'}</div>
+                        ) : (
+                          <div className="quest-done">Reward: {q.reward.amount} @ {q.reward.vendor}</div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <h5 className="templates-header-title" style={{ marginTop: 12 }}>🎫 Vouchers</h5>
+                <div className="vouchers-list">
+                  {vouchers.length === 0 ? (
+                    <div className="templates-empty"><p>No vouchers yet — complete quests to earn rewards!</p></div>
+                  ) : (
+                    vouchers.map(v => (
+                      <div key={v.id} className={`voucher-card ${v.claimed ? 'claimed' : ''}`}>
+                        <div className="voucher-info">
+                          <div className="voucher-amount">{v.amount}</div>
+                          <div className="voucher-vendor">{v.vendor}</div>
+                          <div className="voucher-code">{v.code}</div>
+                        </div>
+                        <div className="voucher-actions">
+                          {!v.claimed ? (
+                            <button onClick={() => {
+                              setVouchers(prev => prev.map(x => x.id === v.id ? { ...x, claimed: true } : x));
+                            }} className="templates-action-btn load-btn">Claim</button>
+                          ) : (
+                            <button onClick={() => { navigator.clipboard && navigator.clipboard.writeText(v.code); }} className="templates-action-btn save-btn">Copy Code</button>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        
 
       {/* Add Checklist Modal */}
       {showAddChecklistModal && (

@@ -202,7 +202,7 @@ const Home = ({ onNavigate, currentUser }) => {
       location: "Manila",
       avatar: "MS",
       rating: 5,
-      text: "Lakabay transformed my travel planning! The AI assistant is like having a local friend in every destination. Absolutely love it!",
+      text: "Landscapes transformed my travel planning! The AI assistant is like having a local friend in every destination. Absolutely love it!",
       date: "2 weeks ago"
     },
     {
@@ -256,7 +256,7 @@ const Home = ({ onNavigate, currentUser }) => {
       location: "Batanes",
       avatar: "IC",
       rating: 5,
-      text: "Found the most stunning photo spots thanks to Lakabay. The location insights helped me capture perfect shots!",
+      text: "Found the most stunning photo spots thanks to Landscapes. The location insights helped me capture perfect shots!",
       date: "1 week ago"
     },
     {
@@ -276,7 +276,7 @@ const Home = ({ onNavigate, currentUser }) => {
       <FeaturedDestinations onNavigate={onNavigate} />
       <TravelersFavorites experiences={travelersFavorites} onNavigate={onNavigate} />
       <CategoriesSection categories={categories} activeCategory={activeCategory} setActiveCategory={setActiveCategory} onNavigate={onNavigate} />
-      <WhyChooseLakabay features={whyChoose} />
+      <WhyChooseLandscapes features={whyChoose} />
       <PricingPreview currentUser={currentUser} onNavigate={onNavigate} />
       <TestimonialsSection testimonials={testimonials} />
       <CTASection onNavigate={onNavigate} />
@@ -342,7 +342,7 @@ function HeroSection({ searchQuery, setSearchQuery, onNavigate }) {
             <Search className="search-icon" size={24} />
             <input
               type="text"
-              placeholder="City, airport, region, landmark or property name"
+              placeholder="Local Cuisine, Beaches, or Activities"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setShowSearchDropdown(true)}
@@ -574,8 +574,8 @@ function TravelersFavorites({ experiences, onNavigate }) {
   );
 }
 
-// ===== WHY CHOOSE LAKABAY =====
-function WhyChooseLakabay({ features }) {
+// ===== WHY CHOOSE Landscapes   =====
+function WhyChooseLandscapes ({ features }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -587,7 +587,7 @@ function WhyChooseLakabay({ features }) {
         transition={{ duration: 0.6 }}
         className="section-header-klook"
       >
-        <h2 className="section-title-klook">Why Choose Lakabay?</h2>
+        <h2 className="section-title-klook">Why Choose ?</h2>
         <p className="section-subtitle-klook">Travel smarter with AI-powered tools</p>
       </motion.div>
 
@@ -641,7 +641,7 @@ function PricingPreview({ currentUser, onNavigate }) {
     {
       name: 'Basic',
       price: '₱99',
-      period: 'per month',
+      period: 'month',
       features: [
         { text: 'Everything in Free', included: true },
         { text: '50 AI queries per day', included: true },
@@ -660,7 +660,7 @@ function PricingPreview({ currentUser, onNavigate }) {
     {
       name: 'Premium',
       price: '₱199',
-      period: 'per month',
+      period: 'month',
       features: [
         { text: 'Everything in Basic +', included: true },
         { text: 'Unlimited AI queries & chat', included: true },
@@ -821,7 +821,7 @@ function CTASection({ onNavigate }) {
       >
         <h2 className="cta-title-klook">Ready for Your Next Adventure?</h2>
         <p className="cta-subtitle-klook">
-          Join 50,000+ travelers discovering the Philippines with Lakabay
+          Join 50,000+ travelers discovering the Philippines with Landscapes
         </p>
         <button
           className="cta-button-klook"
@@ -842,7 +842,7 @@ function FooterSection() {
       <div className="footer-content-klook">
         <div className="footer-grid-klook">
           <div className="footer-col-klook">
-            <h3 className="footer-brand-klook">Lakabay</h3>
+            <h3 className="footer-brand-klook">Landscapes</h3>
             <p className="footer-tagline-klook">
               Your AI-powered companion to explore the Philippines authentically.
             </p>
@@ -892,7 +892,7 @@ function FooterSection() {
 
         <div className="footer-bottom-klook">
           <p className="footer-copyright-klook">
-            © 2025 Lakabay. All rights reserved.
+            © 2025 Landscapes. All rights reserved.
           </p>
         </div>
       </div>
